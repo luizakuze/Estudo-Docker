@@ -182,12 +182,14 @@ A imagem sem multistage precisa de muitos pacotes para que o build da app aconte
     Instalado o `apache2`, dsaindo do container e ainda deixando ele em execução `Ctrl + p + q`
 
 3. Criando a imagem com alterações
-    ```
+    ```bash
     docker container ls 
-    docker commit -m "meu container" container-id
+    docker commit -m "meu container" container-id # docker commit cria imagem
     docker image ls
     $ docker tag image-id linuxtips/apache_2:1.0
     ```
 
 4. Iniciando container utilizando a imagem com alterações
-
+    ``` 
+    docker container run -it linuxtips/apache_2:1.0 /bin/bash
+    ```

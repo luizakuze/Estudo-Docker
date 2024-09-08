@@ -71,3 +71,5 @@ Vai guardar e distribuir imagens assim como o Docker Hub, mas localmente.
     docker tag luizakuze/apache:1.0 localhost:5000/apache
     docker push localhost:5000/apache
     ```
+
+Esse é um registry local bem simples, na documentação oficial é possível visualizar novas funcionalidades.
