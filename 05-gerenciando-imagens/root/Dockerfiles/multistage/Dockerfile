@@ -1,6 +1,11 @@
-FROM golang
+FROM golang as construindo
+
+WORKDIR /src
+ADD . /src
+RUN go build -o goapp
+
+FROM alpine:3.1
 
 WORKDIR /app
-ADD . /app
-RUN go build -o goapp
-ENTRYPOINT ./goapp
+COPY --from=construindo /src/goapp /app
+ENTRYPOINT [ "./goapp" ]

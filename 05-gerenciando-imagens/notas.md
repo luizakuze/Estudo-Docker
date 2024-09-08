@@ -3,7 +3,7 @@
 
 Duas formas: Montar uma distribuição praticamente do zero utilizando somente instruções através do dockerfile e outra forma é realizar modificações em uma imagem já existente e salvando em uma imagem nova
 
-## Dockerfile do zero 
+## I. Dockerfile do zero 
 
 
 1. Montar o Dockerfile
@@ -111,6 +111,7 @@ ADD . /app
 RUN go build -o goapp
 ENTRYPOINT ./goapp
 ```
+- Utilizando imagem golang para criação da imagem do container, pois já configura o ambiente
 
 Aplicação em Go:
 ```golang
@@ -122,8 +123,71 @@ func main() {
 }
 ```
  
+Comandos: 
 ```bash
 docker build -t goapp:1.0 . 
 docker image ls | grep goapp
 docker run -it goapp:1.0 .
 ```
+
+
+
+Refazendo o código do Dockerfile, melhorando ele:
+- Duas entradas `FROM`. Cada entrada dessa define o início de um bloco.
+```docker
+FROM golang as construindo 
+
+WORKDIR /src 
+ADD . /src 
+RUN go build -o goapp
+
+FROM apline:3.1
+
+WORKDIR /app
+COPY --from=construindo /src/goapp /app
+ENTRYPOINT [ "./goapp" ]
+```
+
+#### Primeiro bloco:
+- `FROM golang as construindo`  apelidando primeiro bloco de "construindo", utilizando a imagem do goland para criação da imagem de container
+- `WORKDIR /src` diretório de trabalho, quando o container iniciar estaremos nesse diretório.
+- `ADD . /src` adicionando a app dentro do diretório `/src`
+- `RUN go build -o goapp` executa o build da aplicação golang
+#### Segundo bloco
+- `FROM apline:3.1` iniciando segundo bloco, utilizando imagem do alpine para criação da imagem de container
+- `WORKDIR /app` definindo outro diretório de trabalho
+- `COPY --from=construindo /src/goapp /app` copia o bloco chamado "construindo" que está em /srsc/goapp para /app, ou seja, copiando o binário que foi compilado no bloco anterior para esse.
+- `ENTRYPOINT  ./goapp` executa app
+- Utilizar o Alpine para criação da imagem do container é um prática comum para reduzir o tamanho das imagens. Documentação: `https://hub.docker.com/_/alpine`.
+
+Construindo, rodando e verificando:
+```
+docker build -t goapp_multistage:1.0 .
+docker run -it goapp_multistage:1.0 
+docker image ls | grep goapp 
+```
+
+A imagem sem multistage precisa de muitos pacotes para que o build da app aconteça. Na imagme com multistage, também são utilizados esses pacotes para o build, mas eles são descartados e apenas seu binário é copiado para o segundo bloco, onde utilizamos somente a imagem do alpine.
+
+## II. Costumizando uma imagem base
+1. Criando e xecutando um container com uma imagem base
+    ```
+    docker container run -it debian:8 /bin/bash
+    ``` 
+
+2. Fazendo algumas alterações no container
+    ``` 
+    apt-get update && apt-get install -y apache2 && apt-get clean
+    ``` 
+    Instalado o `apache2`, dsaindo do container e ainda deixando ele em execução `Ctrl + p + q`
+
+3. Criando a imagem com alterações
+    ```
+    docker container ls 
+    docker commit -m "meu container" container-id
+    docker image ls
+    $ docker tag image-id linuxtips/apache_2:1.0
+    ```
+
+4. Iniciando container utilizando a imagem com alterações
+
