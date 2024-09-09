@@ -58,7 +58,7 @@ A função do volume é persistir os dados, eles são diretórios externos ao co
     - `type=volume` indica que é um volume
     - `src=giropops` qual volume pretende montar
     - `dst=/var/opa` onde vai ser montado
-## Extra
+### Alguns comandos...
 
 1. Visualizar volumes
     ```
@@ -100,9 +100,9 @@ A função do volume é persistir os dados, eles são diretórios externos ao co
     ```
 
     Aqui, tem dois containers com PostgreSQL em execução. 
-    Verificando se já algum dado no volume "/data" do container "dbdados" (utilizar docker inspect -f {{.Mount}} dbdados e ls nesse path).
+    Para verificar se já algum dado no volume `"/data"` do container "dbdados", utilizar `docker inspect -f {{.Mount}} dbdados` e `ls` nesse path.
 
-    O comando abaixo cria um novo container que monta o volume do container dbdados (localizado em /data) e também monta um diretório do host no container no caminho /backup:
+    O comando abaixo cria um novo container que monta o volume do container dbdados (localizado em "/data") e também monta um diretório do host no container no caminho "/backup":
     ```
     docker run -it --volumes-from dbdados -v $(pwd):/backup debian tar -cvf /backup/backup.tar /dat
     ``` 

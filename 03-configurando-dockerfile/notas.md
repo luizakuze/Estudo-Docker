@@ -1,4 +1,4 @@
-# Configurando mum Dockerfile
+# Configurando um Dockerfile
 
 1. Fazer o build 
 
