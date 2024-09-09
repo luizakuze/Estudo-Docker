@@ -1,5 +1,3 @@
-https://blog.4linux.com.br/docker-compose-explicado/
-
 # Docker Compose
 
 **Antes**: Cada tipo de container (aplicação, banco de dados e servidor web) era definido e gerenciado separadamente com seus próprios Dockerfiles.
